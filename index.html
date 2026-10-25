@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.web3forms.com; frame-ancestors 'none'; form-action 'self' https://api.web3forms.com; base-uri 'self'; object-src 'none'; upgrade-insecure-requests;">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Riskcurity — Stop Losing Deals Because of Security Gaps</title>
+  <meta name="description" content="Enterprise clients demand proof your systems are secure. Riskcurity finds vulnerabilities, fixes them, and gets you SOC 2 or ISO 27001 certified — so you close contracts faster.">
+  <link rel="canonical" href="https://www.riskcurity.com/">
+  <meta name="robots" content="index, follow">
+
+  <!-- Favicon / Tab Logo -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="favicon-shield.png">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.riskcurity.com/">
+  <meta property="og:title" content="Riskcurity — Simple Security & Compliance for Scaling Companies">
+  <meta property="og:description" content="We test your systems for weaknesses, handle your SOC 2 & ISO 27001 compliance, and watch your infrastructure 24/7 — so you can close enterprise deals faster.">
+  <meta property="og:site_name" content="Riskcurity">
+  <meta property="og:image" content="https://www.riskcurity.com/Riskcuritylogo.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Riskcurity — Simple Security & Compliance for Scaling Companies">
+  <meta name="twitter:description" content="We test your systems for weaknesses, handle your SOC 2 & ISO 27001 compliance, and watch your infrastructure 24/7 — so you can close enterprise deals faster.">
+  <meta name="twitter:image" content="https://www.riskcurity.com/Riskcuritylogo.png">
+
+  <!-- Organization Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Riskcurity",
+    "url": "https://www.riskcurity.com/",
+    "logo": "https://www.riskcurity.com/Riskcuritylogo.png",
+    "email": "riskcurity@gmail.com",
+    "telephone": "+923423717545",
+    "description": "Cybersecurity, penetration testing, compliance certifications (SOC 2, ISO 27001), 24/7 SOC monitoring, and AI security engineering for B2B companies."
+  }
+  </script>
+
+  <!-- FAQPage Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How much does a penetration test cost?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Our penetration testing pricing starts at a flat rate based on your scope (web app, mobile, or cloud infrastructure). All testing includes a comprehensive technical report, direct engineering code-fix support, and a 100% free re-test."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How fast can you complete a penetration test or security audit?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most penetration tests and security readiness audits are completed within 5 to 7 business days, compared to 4-6 weeks at legacy consulting firms."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between a vulnerability scan and a penetration test?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A vulnerability scan is an automated software check for known bugs. A penetration test is a manual, real-world attack performed by certified ethical hackers (OSCP/CEH) to exploit complex logic flaws and chain weaknesses together safely."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you help us fix the security vulnerabilities found?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes! Unlike firms that just hand over a PDF report, Riskcurity engineers embed directly with your developers to write exact code patches and cloud configuration fixes."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does 24/7 SOC Monitoring work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Our 24/7 SOC connects to your AWS/GCP cloud logs, endpoints, and identity providers. Real security analysts inspect alerts around the clock with a guaranteed under-15-minute SLA."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can you prepare us for SOC 2 Type II or ISO 27001 audits?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, we handle complete gap analysis, policy creation, automated evidence collection, and pre-audit readiness verification so you pass on your first attempt."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ────────────── NAV ────────────── -->
+<header class="site-header">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img src="riskcurity-mark.svg" alt="Riskcurity Logo" class="nav-brand-logo">
+      <span>RISKCURITY</span>
+    </a>
+    <button id="navToggle" class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+    <ul class="nav-list" id="navList">
+      <li><a href="index.html#disciplines">Services</a></li>
+      <li><a href="services/penetration-testing.html">Penetration Testing</a></li>
+      <li><a href="services/security-audits.html">Security Audits</a></li>
+      <li><a href="services/soc-monitoring.html">24/7 SOC</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="blog.html">Blog &amp; Insights</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="contact.html" class="btn btn-primary">Book Security Assessment</a></li>
+    </ul>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ────────────── HERO ────────────── -->
+<section class="hero">
+  <!-- Animated network topology SVG at low opacity -->
+  <svg class="hero-bg-svg" viewBox="0 0 900 700" fill="none" aria-hidden="true">
+    <path class="hero-bg-path" d="M80 120 L280 240 L520 180 L740 380 M280 240 L420 460 L640 520 M80 120 L180 380 L420 460 M520 180 L580 340 L640 520" stroke="rgba(37,136,111,0.4)" stroke-width="1.5"/>
+    <circle cx="80"  cy="120" r="5" fill="rgba(37,136,111,0.5)"/>
+    <circle cx="280" cy="240" r="5" fill="rgba(37,136,111,0.5)"/>
+    <circle cx="520" cy="180" r="5" fill="rgba(37,136,111,0.5)"/>
+    <circle cx="740" cy="380" r="5" fill="rgba(37,136,111,0.5)"/>
+    <circle cx="420" cy="460" r="5" fill="rgba(37,136,111,0.5)"/>
+    <circle cx="640" cy="520" r="5" fill="rgba(37,136,111,0.5)"/>
+    <circle cx="580" cy="340" r="5" fill="rgba(37,136,111,0.5)"/>
+    <circle cx="180" cy="380" r="5" fill="rgba(37,136,111,0.5)"/>
+  </svg>
+
+  <div class="container hero-grid">
+    <div class="hero-content">
+      <span class="label hero-eyebrow">Enterprise Security &amp; Compliance Engineering</span>
+      <h1 class="hero-title">Stop losing deals because of security gaps.</h1>
+      <p class="hero-sub">
+        Enterprise clients demand proof your systems are secure before they sign. We find vulnerabilities, write the fixes, and get you SOC 2 or ISO 27001 certified — so you close contracts faster.
+      </p>
+      <div class="hero-ctas" style="flex-wrap:wrap; gap:0.75rem; margin-bottom:1.5rem">
+        <a href="contact.html" class="btn btn-primary">Book a Security Assessment →</a>
+        <a href="https://wa.me/923423717545" target="_blank" rel="noopener" class="btn btn-ghost" style="border-color:#25D366;color:#25D366">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.84 9.84 0 0 0 12.04 2m.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.27-2.42 5.82a8.19 8.19 0 0 1-5.82 2.42c-1.44 0-2.85-.38-4.09-1.11l-.29-.17-3.04.8 1.05-2.96-.19-.3a8.19 8.19 0 0 1-1.25-4.32c0-4.54 3.7-8.24 8.24-8.24m4.53 11.53c-.25-.13-1.47-.72-1.7-.81-.23-.08-.4-.13-.57.13-.17.25-.66.81-.81.98-.15.17-.3.19-.55.06-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.39-1.72-.15-.25-.02-.38.11-.5.11-.11.25-.29.38-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.57-1.37-.78-1.87-.2-.49-.41-.42-.57-.43h-.49c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.71 4.29 3.8.6.26 1.07.41 1.44.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.18-.48-.31z"/></svg>
+          WhatsApp Direct Chat
+        </a>
+        <button class="btn btn-ghost lm-trigger" style="border-color:var(--amber);color:var(--amber)">
+          ↓ Free Security Checklist PDF
+        </button>
+      </div>
+    </div>
+
+    <!-- Live Security & Threat Defense Terminal -->
+    <div style="display:flex;justify-content:center">
+      <div style="background:var(--surface-2);border:1px solid var(--border-hi);border-radius:var(--r3);padding:1.75rem;width:100%;max-width:440px;box-shadow:0 20px 40px rgba(0,0,0,0.5)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;border-bottom:1px solid var(--border);padding-bottom:0.75rem">
+          <div style="display:flex;align-items:center;gap:0.5rem">
+            <span style="width:10px;height:10px;border-radius:50%;background:#FF5F56;display:inline-block"></span>
+            <span style="width:10px;height:10px;border-radius:50%;background:#FFBD2E;display:inline-block"></span>
+            <span style="width:10px;height:10px;border-radius:50%;background:#27C93F;display:inline-block"></span>
+            <span class="mono" style="font-size:0.78rem;color:var(--slate-lt);margin-left:0.5rem">illustrative-assessment ~ sample</span>
+          </div>
+          <span class="mono" style="font-size:0.72rem;color:var(--teal);background:var(--teal-sub);padding:0.2rem 0.6rem;border-radius:12px;border:1px solid var(--teal-border)">Assessment Snapshot</span>
+        </div>
+
+        <div class="mono" style="font-size:0.82rem;line-height:1.8;color:var(--ink)">
+          <div style="color:var(--slate-lt)">$ riskcurity audit --target=cloud-infra</div>
+          <div style="color:var(--teal)">[i] OWASP Top 10: scope defined during assessment</div>
+          <div style="color:var(--teal)">[i] Cloud IAM &amp; encryption: reviewed against scope</div>
+          <div style="color:var(--amber)">[i] Findings: documented with remediation priorities</div>
+          <div style="color:var(--teal)">[i] Monitoring: available as a separate service</div>
+          <div style="color:var(--slate);margin-top:0.75rem;padding-top:0.75rem;border-top:1px dashed var(--border)">
+            Status: <span style="color:var(--teal);font-weight:600">Illustrative example · not a live customer system</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ────────────── TRUST BAR ────────────── -->
+<section class="trust-bar">
+  <div class="container trust-inner">
+    <div class="trust-header">
+      <span class="trust-title-sm">Trusted Security Team &amp; Recognized Standards</span>
+    </div>
+
+    <div class="trust-stats-row">
+      <div class="trust-stat-item">
+        <div class="trust-stat-num">100+</div>
+        <div class="trust-stat-lbl">Security Assessments Done</div>
+      </div>
+      <div class="trust-stat-item">
+        <div class="trust-stat-num">99.9%</div>
+        <div class="trust-stat-lbl">SOC Monitoring Uptime</div>
+      </div>
+      <div class="trust-stat-item">
+        <div class="trust-stat-num">42%</div>
+        <div class="trust-stat-lbl">Faster Audit Sign-off</div>
+      </div>
+      <div class="trust-stat-item">
+        <div class="trust-stat-num">100%</div>
+        <div class="trust-stat-lbl">Free Re-test Guarantee</div>
+      </div>
+    </div>
+
+    <div class="trust-logos">
+      <span class="trust-logo-tag"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> OSCP Certified</span>
+      <span class="trust-logo-tag"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> CISSP Security Engineers</span>
+      <span class="trust-logo-tag"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> CEH Ethical Hackers</span>
+      <span class="trust-logo-tag"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> ISO 27001 Lead Auditors</span>
+      <span class="trust-logo-tag"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> PCI DSS v4.0 Qualified</span>
+    </div>
+  </div>
+</section>
+
+<!-- ────────────── DISCIPLINES ────────────── -->
+<section class="disciplines" id="disciplines">
+  <div class="container">
+    <div class="reveal">
+      <span class="label">What we do</span>
+      <h2 class="section-title">6 security services. One team. Zero runaround.</h2>
+      <p class="section-lead">Most security firms hand you a report and disappear. We stay until every issue is resolved — and give you the paperwork to prove it to your clients.</p>
+    </div>
+
+    <div class="disc-grid reveal-stagger">
+
+      <!-- 1: VAPT -->
+      <div class="disc-card">
+        <div class="disc-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3 class="disc-title">We test your systems by trying to break in</h3>
+        <p class="disc-plain">We simulate real hacker attacks on your website, mobile apps, APIs, and cloud infrastructure. Then we give your developers simple, step-by-step instructions to fix every vulnerability.</p>
+        <p class="disc-tech">Penetration Testing (VAPT) · App &amp; Cloud Security</p>
+        <ul class="disc-feats">
+          <li>Free re-test after you apply fixes</li>
+          <li>Clear proof for every issue found</li>
+          <li>Fast 5 to 7 day delivery</li>
+        </ul>
+      </div>
+
+      <!-- 2: GRC -->
+      <div class="disc-card">
+        <div class="disc-icon">
+          <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <h3 class="disc-title">Compliance &amp; audits, done without stress</h3>
+        <p class="disc-plain">Forget collecting spreadsheets and screenshots for weeks. We connect automated tools to gather audit evidence continuously, keeping you ready for SOC 2, ISO 27001, and PCI DSS.</p>
+        <p class="disc-tech">SOC 2 · ISO 27001 · PCI DSS · NIST Standards</p>
+        <ul class="disc-feats">
+          <li>Automatic evidence from AWS, GitHub &amp; Okta</li>
+          <li>Pre-written security policies ready for auditors</li>
+          <li>Accepted by top global audit firms</li>
+        </ul>
+      </div>
+
+      <!-- 3: SOC -->
+      <div class="disc-card">
+        <div class="disc-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <h3 class="disc-title">24/7 expert monitoring for your systems</h3>
+        <p class="disc-plain">Our security team watches your infrastructure day and night. If a suspicious login or threat occurs, we investigate and stop it immediately before it causes damage.</p>
+        <p class="disc-tech">24/7 Security Operations Center (SOC) · Threat Control</p>
+        <ul class="disc-feats">
+          <li>Under 15-minute response time</li>
+          <li>Real security analysts, not just automated bots</li>
+          <li>Full coverage for cloud and company devices</li>
+        </ul>
+      </div>
+
+      <!-- 4: SIEM -->
+      <div class="disc-card">
+        <div class="disc-icon">
+          <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 14 15 20 9"/><polyline points="14 9 20 9 20 15"/></svg>
+        </div>
+        <h3 class="disc-title">Smart security alerts — zero useless noise</h3>
+        <p class="disc-plain">Most security tools overwhelm your team with hundreds of false alarms. We tune your alerts so you only get notified when a real threat happens.</p>
+        <p class="disc-tech">Smart Log Analysis · False Alarm Reduction</p>
+        <ul class="disc-feats">
+          <li>Custom alert rules for your environment</li>
+          <li>Reduces false alarm noise by up to 68%</li>
+          <li>Works with AWS, Datadog, Splunk &amp; more</li>
+        </ul>
+      </div>
+
+      <!-- 5: AI Agents -->
+      <div class="disc-card">
+        <div class="disc-icon">
+          <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/></svg>
+        </div>
+        <h3 class="disc-title">AI tools that automate work safely</h3>
+        <p class="disc-plain">We build custom AI assistants to automate repetitive security tasks and compliance document collection — with strict safety controls so humans approve important actions.</p>
+        <p class="disc-tech">Custom AI Tools · Safe Automation Guardrails</p>
+        <ul class="disc-feats">
+          <li>Automatic triage of security alerts</li>
+          <li>Fast compliance evidence extraction</li>
+          <li>Human control on all key decisions</li>
+        </ul>
+      </div>
+
+      <!-- 6: Secure Dev -->
+      <div class="disc-card">
+        <div class="disc-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <h3 class="disc-title">Web applications built tough against attacks</h3>
+        <p class="disc-plain">We design and build websites and web apps with enterprise security built in from day one, so you pass client security questionnaires effortlessly.</p>
+        <p class="disc-tech">Secure Web Apps · Built-in Cyber Defense</p>
+        <ul class="disc-feats">
+          <li>Passes client vendor security reviews easily</li>
+          <li>Strong protection for user data &amp; logins</li>
+          <li>Automated security checks in your code pipeline</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ────────────── FRAMEWORKS & STANDARDS ────────────── -->
+<section class="frameworks-section" id="frameworks">
+  <div class="container">
+    <div class="reveal">
+      <span class="label">Compliance &amp; Governance</span>
+      <h2 class="section-title">Every certification your enterprise clients will ask for</h2>
+      <p class="section-lead">
+        SOC 2, ISO 27001, PCI DSS, GDPR — your enterprise clients check for these before signing any contract. We handle all of it, so you're never the reason a deal stalls.
+      </p>
+    </div>
+
+    <div class="frameworks-grid reveal-stagger">
+
+      <!-- 1. Core Security Frameworks -->
+      <div class="fw-card">
+        <div class="fw-header">
+          <div class="fw-category-tag">Core Security</div>
+          <h3 class="fw-card-title">Information Security &amp; Safeguards</h3>
+        </div>
+        <div class="fw-items">
+          <div class="fw-item">
+            <div class="fw-code">ISO/IEC 27001</div>
+            <div class="fw-name">Information Security Management Systems (ISMS)</div>
+            <div class="fw-desc">Comprehensive standard for managing risk, security policies, asset protection, and continuous ISMS audits.</div>
+          </div>
+          <div class="fw-item">
+            <div class="fw-code">NIST CSF 2.0</div>
+            <div class="fw-name">Cybersecurity Framework</div>
+            <div class="fw-desc">Six core functions: Govern, Identify, Protect, Detect, Respond, and Recover across modern hybrid environments.</div>
+          </div>
+          <div class="fw-item">
+            <div class="fw-code">NIST SP 800-53</div>
+            <div class="fw-name">Federal Security &amp; Privacy Controls</div>
+            <div class="fw-desc">Detailed control catalog for federal agencies, defense contractors, and high-assurance enterprise systems.</div>
+          </div>
+          <div class="fw-item">
+            <div class="fw-code">CIS Controls</div>
+            <div class="fw-name">Critical Security Controls (v8)</div>
+            <div class="fw-desc">Prioritized, prescriptive set of 18 safeguards designed to stop the most common cyber attack vectors.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. AI Governance -->
+      <div class="fw-card fw-card--featured">
+        <div class="fw-header">
+          <div class="fw-category-tag fw-category-tag--amber">AI Governance</div>
+          <h3 class="fw-card-title">Artificial Intelligence Trust &amp; Safety</h3>
+        </div>
+        <div class="fw-items">
+          <div class="fw-item">
+            <div class="fw-code">ISO/IEC 42001</div>
+            <div class="fw-name">AI Management Systems (AIMS)</div>
+            <div class="fw-desc">The international standard for responsible AI deployment — covering AI risk assessments, training data governance, algorithmic transparency, traceability, and human-in-the-loop oversight.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Service Organization / Vendor Trust -->
+      <div class="fw-card">
+        <div class="fw-header">
+          <div class="fw-category-tag">Vendor Trust</div>
+          <h3 class="fw-card-title">Service Organization Controls</h3>
+        </div>
+        <div class="fw-items">
+          <div class="fw-item">
+            <div class="fw-code">SOC 2 (Type I / Type II)</div>
+            <div class="fw-name">Trust Services Criteria (AICPA)</div>
+            <div class="fw-desc">Rigorous verification across Security, Availability, Processing Integrity, Confidentiality, and Privacy for B2B SaaS and service vendors.</div>
+          </div>
+          <div class="fw-item">
+            <div class="fw-code">SOC 1</div>
+            <div class="fw-name">Internal Controls Over Financial Reporting</div>
+            <div class="fw-desc">SSAE 18 / ISAE 3402 reports for service organizations whose systems impact their clients' financial reporting.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Payments -->
+      <div class="fw-card">
+        <div class="fw-header">
+          <div class="fw-category-tag">Payments</div>
+          <h3 class="fw-card-title">Cardholder Data Security</h3>
+        </div>
+        <div class="fw-items">
+          <div class="fw-item">
+            <div class="fw-code">PCI DSS (v4.0)</div>
+            <div class="fw-name">Payment Card Industry Data Security Standard</div>
+            <div class="fw-desc">End-to-end payment data protection, cardholder data environment (CDE) isolation, tokenization, and QSA audit preparation.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Privacy-Specific -->
+      <div class="fw-card">
+        <div class="fw-header">
+          <div class="fw-category-tag">Data Privacy &amp; Healthcare</div>
+          <h3 class="fw-card-title">Global Privacy &amp; Sensitive Data</h3>
+        </div>
+        <div class="fw-items">
+          <div class="fw-item">
+            <div class="fw-code">GDPR</div>
+            <div class="fw-name">EU General Data Protection Regulation</div>
+            <div class="fw-desc">Lawful data processing, user rights, data protection impact assessments (DPIAs), and cross-border transfer safeguards.</div>
+          </div>
+          <div class="fw-item">
+            <div class="fw-code">CCPA / CPRA</div>
+            <div class="fw-name">California Consumer Privacy &amp; Rights Act</div>
+            <div class="fw-desc">Consumer consent workflows, sensitive data opt-outs, and statutory security requirements.</div>
+          </div>
+          <div class="fw-item">
+            <div class="fw-code">HIPAA</div>
+            <div class="fw-name">Health Insurance Portability &amp; Accountability</div>
+            <div class="fw-desc">Security, Privacy, and Breach Notification rules for protected health information (ePHI) in healthcare platforms.</div>
+          </div>
+          <div class="fw-item">
+            <div class="fw-code">ISO/IEC 27701</div>
+            <div class="fw-name">Privacy Information Management System (PIMS)</div>
+            <div class="fw-desc">High-assurance privacy extension to ISO 27001 mapping directly to global privacy laws for controllers and processors.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Cloud-Specific & Federal -->
+      <div class="fw-card">
+        <div class="fw-header">
+          <div class="fw-category-tag">Cloud &amp; Federal</div>
+          <h3 class="fw-card-title">Cloud Infrastructure Authorization</h3>
+        </div>
+        <div class="fw-items">
+          <div class="fw-item">
+            <div class="fw-code">CSA CCM</div>
+            <div class="fw-name">Cloud Controls Matrix (Cloud Security Alliance)</div>
+            <div class="fw-desc">Cybersecurity control framework mapped specifically to cloud architectures across AWS, GCP, and Azure.</div>
+          </div>
+          <div class="fw-item">
+            <div class="fw-code">FedRAMP</div>
+            <div class="fw-name">Federal Risk &amp; Authorization Management</div>
+            <div class="fw-desc">Rigorous security authorization required for cloud service providers (CSPs) delivering services to US government agencies.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ────────────── METHODOLOGY ────────────── -->
+<section class="methodology" id="approach">
+  <div class="container">
+    <div class="reveal">
+      <span class="label">How we work</span>
+      <h2 class="section-title">How we work: clear steps, no surprises</h2>
+      <p class="section-lead">From first call to full certification — here's exactly what happens when you work with us.</p>
+    </div>
+
+    <div class="method-grid">
+      <div class="m-card">
+        <div class="m-num">01</div>
+        <span class="m-stage-label">Assess</span>
+        <h3 class="m-title">1. Find your security risks</h3>
+        <p class="m-desc">We inspect your systems and audit requirements to identify your biggest risks first, saving you time and money.</p>
+        <div class="m-deliv"><strong>You get:</strong> A risk report and priority fix list, delivered in 48 hours</div>
+      </div>
+
+      <div class="m-card">
+        <div class="m-num">02</div>
+        <span class="m-stage-label">Defend</span>
+        <h3 class="m-title">2. Fix all weaknesses</h3>
+        <p class="m-desc">We test your apps like hackers, show exact proof of any issues, and work directly with your team to write the code fixes.</p>
+        <div class="m-deliv"><strong>You get:</strong> Verified fixes confirmed by a free re-test</div>
+      </div>
+
+      <div class="m-card">
+        <div class="m-num">03</div>
+        <span class="m-stage-label">Automate</span>
+        <h3 class="m-title">3. Automate your compliance</h3>
+        <p class="m-desc">We connect smart tools to gather audit evidence automatically, removing boring paperwork for your team.</p>
+        <div class="m-deliv"><strong>You get:</strong> A live dashboard showing audit readiness, updated daily</div>
+      </div>
+
+      <div class="m-card">
+        <div class="m-num">04</div>
+        <span class="m-stage-label">Evolve</span>
+        <h3 class="m-title">4. Stay protected as you grow</h3>
+        <p class="m-desc">We continuously monitor your environment, re-test periodically, and keep your security strong as your business grows.</p>
+        <div class="m-deliv"><strong>You get:</strong> Quarterly re-tests and 24/7 threat alerts as you scale</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ────────────── WHY ────────────── -->
+<section class="why" id="why">
+  <div class="container">
+    <div class="reveal">
+      <span class="label">Why Riskcurity</span>
+      <h2 class="section-title">Why fast-growing companies choose us over the big firms</h2>
+      <p class="section-lead">Big security firms charge enterprise rates and hand you a PDF. We charge fairly, write the actual fixes, and stay until your audit is passed.</p>
+    </div>
+
+    <div class="why-grid reveal-stagger">
+      <div class="why-card">
+        <h3 class="why-title">Results in 5 to 7 days</h3>
+        <p class="why-body">Your pen test or compliance report lands in under 7 days. Most firms take 4–6 weeks. We don't.</p>
+      </div>
+      <div class="why-card">
+        <h3 class="why-title">We write the fixes, not just reports</h3>
+        <p class="why-body">Our engineers embed with your dev team and write the actual code — no vague recommendations left for you to figure out.</p>
+      </div>
+      <div class="why-card">
+        <h3 class="why-title">Audit approval, guaranteed</h3>
+        <p class="why-body">Our evidence packages and reports are structured to meet the exact requirements of SOC 2, ISO 27001, and PCI DSS auditors globally.</p>
+      </div>
+      <div class="why-card">
+        <h3 class="why-title">One flat price. Re-tests always free.</h3>
+        <p class="why-body">No hourly billing. No scope creep surprises. Fix verification re-tests are included on every engagement, always.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ────────────── FAQ BLOCK ────────────── -->
+<section class="faq-section" id="faq">
+  <div class="container">
+    <div class="reveal" style="text-align:center;margin-bottom:3rem">
+      <span class="label">Buyer Knowledge &amp; Answers</span>
+      <h2 class="section-title" style="margin:0 auto 1rem auto">Frequently Asked Questions</h2>
+      <p class="section-lead" style="margin:0 auto">Clear, honest answers to the top questions CTOs, IT Directors, and compliance leads ask before hiring us.</p>
+    </div>
+
+    <div class="faq-grid">
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>How much does a penetration test cost?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Our penetration testing pricing is predictable and flat-rate, scaled strictly by target complexity (e.g., single web application, API suite, mobile app, or cloud environment). We don't bill hourly or add hidden re-testing fees. Contact us for an exact custom quote within 24 hours.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>How fast can you complete a penetration test or security audit?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Standard web application or network penetration tests take between 5 to 7 business days from kick-off to full technical deliverable. Compliance readiness audits typically complete in 2 to 3 weeks.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>What is the difference between an automated vulnerability scan and a pen test?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Vulnerability scanners run automated checks for known software patches, but yield high false-positives and miss business logic flaws. A penetration test is a manual, offensive attack simulated by certified ethical hackers (OSCP/CEH) who chain vulnerabilities together just like real adversaries.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>Do you write the actual code fixes or just hand us a PDF?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Unlike traditional consulting houses that dump a 100-page PDF on your team, Riskcurity engineers embed with your developers to write exact code patches, IAM policy updates, and cloud infrastructure fixes directly.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>How does 24/7 SOC Monitoring work for scaling teams?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>We integrate our Security Operations Center with your AWS, Azure, GCP, GitHub, and identity providers. We tune SIEM rules to filter out noise, providing 24/7 human analyst investigation with a guaranteed under-15-minute response SLA.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>Are re-tests free after we patch vulnerabilities?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Yes. Every Riskcurity engagement includes a 100% free re-test within 30 days to verify that all remediation patches have been properly applied and validated.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>What security certifications do your team hold?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Our team consists of Offensive Security Certified Professionals (OSCP), Certified Information Systems Security Professionals (CISSP), Certified Ethical Hackers (CEH), and ISO 27001 Lead Auditors.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>Can you help us pass enterprise vendor security questionnaires?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Absolutely. We help startups and B2B SaaS providers fill out complex SIG, VSA, and custom enterprise security questionnaires, providing official executive attestations to close deals faster.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ────────────── CONTACT ────────────── -->
+<section class="contact-section" id="contact">
+  <div class="container contact-grid">
+
+    <div>
+      <span class="label label--amber">Get in touch</span>
+      <h2 class="section-title">Tell us what's blocking you. We'll fix it.</h2>
+      <p class="section-lead">
+        Whether you have an audit in 6 weeks or a client demanding a security questionnaire — tell us where you are and we'll send a clear plan within 24 hours.
+      </p>
+
+      <div class="ci-list">
+        <div class="ci-item">
+          <span class="ci-label">Email</span>
+          <a href="mailto:riskcurity@gmail.com" class="ci-val">riskcurity@gmail.com</a>
+        </div>
+        <div class="ci-item">
+          <span class="ci-label">Phone / WhatsApp</span>
+          <a href="https://wa.me/923423717545" class="ci-val">+92 342 3717545</a>
+        </div>
+        <div class="ci-item">
+          <span class="ci-label">Proposal turnaround</span>
+          <span class="ci-val">24 business hours</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card reveal">
+      <form id="contactForm">
+        <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="fg">
+          <label class="fl" for="fc-name">Your name</label>
+          <input class="fi" type="text" id="fc-name" name="name" placeholder="e.g. Sarah Chen" maxlength="100" autocomplete="name" required>
+        </div>
+        <div class="fg">
+          <label class="fl" for="fc-email">Work email</label>
+          <input class="fi" type="email" id="fc-email" name="email" placeholder="sarah@company.com" maxlength="100" autocomplete="email" required>
+        </div>
+        <div class="fg">
+          <label class="fl" for="fc-phone">Phone (optional)</label>
+          <input class="fi" type="tel" id="fc-phone" name="phone" placeholder="+1 555 000 0000" maxlength="30" autocomplete="tel">
+        </div>
+        <div class="fg">
+          <label class="fl" for="fc-service">What's your priority?</label>
+          <select class="fsel" id="fc-service" name="service" required>
+            <option value="" disabled selected>Choose your main goal…</option>
+            <option value="vapt">I need my systems tested for security weaknesses</option>
+            <option value="compliance">I have an ISO 27001 / SOC 2 / PCI DSS audit coming up</option>
+            <option value="soc">I want someone monitoring my systems 24/7</option>
+            <option value="ai">I want to build safe AI tools</option>
+            <option value="dev">I'm building a product and need it to be secure</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="fl" for="fc-timeline">When do you need this by?</label>
+          <select class="fsel" id="fc-timeline" name="timeline">
+            <option value="urgent">Within the next week</option>
+            <option value="month" selected>Within 30 days</option>
+            <option value="quarter">Next quarter</option>
+          </select>
+        </div>
+        <div class="fg" style="margin-bottom:2rem">
+          <label class="fl" for="fc-detail">What's going on? (brief description)</label>
+          <textarea class="fta" id="fc-detail" name="detail" maxlength="2000" placeholder="Tell us about your tech stack, compliance deadline, or what you need help with. The more specific, the better our proposal."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary fsub">Send request →</button>
+      </form>
+
+      <div id="contactSuccess" style="display:none;padding:2rem 0;text-align:center">
+        <span class="label">Request received</span>
+        <h3 style="font-family:var(--f-display);font-size:1.7rem;color:var(--fog-text);margin:1rem 0">We'll be in touch.</h3>
+        <p style="color:var(--slate-lt)">An engineer will review your details and reply within 24 hours with a proposal.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ────────────── RATING ────────────── -->
+<section class="rating-section" id="rating">
+  <div class="container">
+    <div class="rating-card reveal">
+
+      <div class="rating-left">
+        <span class="label label--amber">Client feedback</span>
+        <h2 class="rating-title">What our clients say</h2>
+        <p class="rating-lead">Most of our clients come back for a second project. A few of them tell us why — and we'd love for you to as well.</p>
+        <div class="rating-trust reveal-stagger">
+          <div class="rt-item"><span class="rt-num">98%</span><span class="rt-label">of clients re-engage for a second project</span></div>
+          <div class="rt-item"><span class="rt-num">4.9</span><span class="rt-label">average rating from enterprise clients</span></div>
+        </div>
+      </div>
+
+      <div class="rating-right">
+        <!-- Form -->
+        <form id="ratingForm" class="rating-form" novalidate>
+          <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+          <!-- Stars -->
+          <div class="star-group" id="starGroup" role="radiogroup" aria-label="Star rating">
+            <span class="star-label">Your rating</span>
+            <div class="stars" id="stars">
+              <button type="button" class="star" data-v="1" aria-label="1 star" title="Poor">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </button>
+              <button type="button" class="star" data-v="2" aria-label="2 stars" title="Fair">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </button>
+              <button type="button" class="star" data-v="3" aria-label="3 stars" title="Good">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </button>
+              <button type="button" class="star" data-v="4" aria-label="4 stars" title="Very good">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </button>
+              <button type="button" class="star" data-v="5" aria-label="5 stars" title="Excellent">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </button>
+            </div>
+            <span class="star-hint" id="starHint">&nbsp;</span>
+          </div>
+
+          <!-- Fields -->
+          <div class="rating-fields">
+            <div class="fg">
+              <label class="fl rl" for="rv-name">Your name</label>
+              <input class="fi ri" type="text" id="rv-name" name="name" placeholder="Alex Chen" maxlength="100" autocomplete="name" required>
+            </div>
+            <div class="fg">
+              <label class="fl rl" for="rv-email">Work email</label>
+              <input class="fi ri" type="email" id="rv-email" name="email" placeholder="alex@company.com" maxlength="100" autocomplete="email" required>
+            </div>
+          </div>
+
+          <div class="fg" style="margin-bottom:1.5rem">
+            <label class="fl rl" for="rv-feedback">Your feedback</label>
+            <textarea class="fta ri" id="rv-feedback" name="feedback" rows="4" maxlength="2000" placeholder="What went well? What could we improve? Be as specific as you like."></textarea>
+          </div>
+
+          <button type="submit" id="ratingSubmit" class="btn btn-primary rating-submit" disabled>
+            Submit rating
+          </button>
+          <p class="rating-privacy">Your feedback is private — we won't publish it without permission.</p>
+        </form>
+
+        <!-- Success state -->
+        <div id="ratingSuccess" class="rating-success" style="display:none">
+          <div class="rs-icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="var(--teal)" stroke-width="2" stroke-linecap="round"/><polyline points="22 4 12 14.01 9 11.01" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="rs-title">Thank you — feedback received.</h3>
+          <p class="rs-body">We read every response. If you left your email we may follow up to understand more — never to market to you.</p>
+          <div class="rs-stars" id="rsStars"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ────────────── FOOTER ────────────── -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-wrap">
+          <img src="riskcurity-mark.svg" alt="Riskcurity Logo" class="footer-brand-logo">
+          <div class="footer-brand-name">RISKCURITY</div>
+        </div>
+        <p class="footer-brand-desc">We test your systems, fix the issues, get you certified, and watch your infrastructure around the clock — so you can sell to enterprise clients with confidence.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Services</div>
+        <ul class="footer-links">
+          <li><a href="services/penetration-testing.html">Penetration Testing</a></li>
+          <li><a href="services/security-audits.html">Security Audits &amp; Compliance</a></li>
+          <li><a href="services/soc-monitoring.html">24/7 SOC Monitoring</a></li>
+          <li><a href="index.html#disciplines">SIEM &amp; Alert Engineering</a></li>
+          <li><a href="index.html#disciplines">AI Safety &amp; Guardrails</a></li>
+          <li><a href="index.html#disciplines">Secure Development</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About Riskcurity</a></li>
+          <li><a href="blog.html">Blog &amp; Insights</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Riskcurity. All rights reserved.</span>
+      <span class="mono">ISO 27001 · SOC 2 · PCI DSS v4.0</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ────────────── PERSISTENT FLOATING WHATSAPP BUTTON ────────────── -->
+<div class="wa-widget">
+  <a href="https://wa.me/923423717545" target="_blank" rel="noopener" class="wa-btn" aria-label="Chat with Riskcurity on WhatsApp">
+    <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.84 9.84 0 0 0 12.04 2m.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.27-2.42 5.82a8.19 8.19 0 0 1-5.82 2.42c-1.44 0-2.85-.38-4.09-1.11l-.29-.17-3.04.8 1.05-2.96-.19-.3a8.19 8.19 0 0 1-1.25-4.32c0-4.54 3.7-8.24 8.24-8.24m4.53 11.53c-.25-.13-1.47-.72-1.7-.81-.23-.08-.4-.13-.57.13-.17.25-.66.81-.81.98-.15.17-.3.19-.55.06-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.39-1.72-.15-.25-.02-.38.11-.5.11-.11.25-.29.38-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.57-1.37-.78-1.87-.2-.49-.41-.42-.57-.43h-.49c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.71 4.29 3.8.6.26 1.07.41 1.44.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.18-.48-.31z"/></svg>
+  </a>
+  <div class="wa-badge">
+    <span class="wa-badge-dot"></span>
+    <span>Chat on WhatsApp (+92 342 3717545)</span>
+  </div>
+</div>
+
+<!-- ────────────── LEAD MAGNET MODAL ────────────── -->
+<div id="lmModalOverlay" class="lm-modal-overlay">
+  <div class="lm-modal">
+    <button id="lmClose" class="lm-close" aria-label="Close modal">✕</button>
+    <span class="label label--amber">Free Security Asset</span>
+    <h3 class="lm-title">Security Self-Assessment Checklist</h3>
+    <p class="lm-desc">Download our 10-point vendor security assessment checklist used by B2B SaaS companies to prepare for SOC 2 audits &amp; enterprise client reviews.</p>
+    <ul class="lm-feat-list">
+      <li>Top 10 essential security controls enterprise buyers check</li>
+      <li>Cloud storage &amp; MFA configuration verification</li>
+      <li>Incident response plan &amp; logging requirements</li>
+    </ul>
+    <form id="lmForm">
+      <div class="fg" style="margin-bottom:1rem">
+        <label class="fl" for="lmName">Your Name</label>
+        <input class="fi" type="text" id="lmName" placeholder="e.g. Alex Morgan" required>
+      </div>
+      <div class="fg" style="margin-bottom:1.5rem">
+        <label class="fl" for="lmEmail">Work Email</label>
+        <input class="fi" type="email" id="lmEmail" placeholder="alex@company.com" required>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">
+        Get Free Checklist PDF →
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ────────────── RISKMATE AI WIDGET ────────────── -->
+<div class="rm-launcher">
+  <span class="rm-launcher-label" id="rmLabel" aria-hidden="true">
+    <span class="rm-label-dot"></span>
+    Riskmate AI
+  </span>
+  <button id="rmTrigger" class="rm-trigger" aria-label="Open Riskmate AI assistant" aria-expanded="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <span class="rm-teal-dot" aria-hidden="true"></span>
+  </button>
+</div>
+
+<div id="rmPanel" class="rm-panel" role="dialog" aria-label="Chat with Riskmate AI" aria-modal="true">
+  <div class="rm-head">
+    <div class="rm-head-text">
+      <div class="rm-head-name">Riskmate AI</div>
+      <div class="rm-head-sub">Security &amp; scope assistant</div>
+    </div>
+    <div class="rm-head-actions">
+      <span class="rm-shield-badge" title="Active Prompt Injection &amp; XSS Defense Engine">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Protected
+      </span>
+      <button id="rmClose" class="rm-close" aria-label="Close chat">✕</button>
+    </div>
+  </div>
+
+  <!-- Login gate (shown first) -->
+  <div id="rmGate" class="rm-gate">
+    <h3 class="rm-gate-title">Ask us anything.</h3>
+    <p class="rm-gate-sub">Share your details and we'll have a real answer ready — no automated runaround.</p>
+
+    <form id="rmGateForm">
+      <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="fg">
+        <label class="fl" for="rmName">Your first name</label>
+        <input class="fi" type="text" id="rmName" placeholder="Alex" maxlength="60" autocomplete="given-name" required>
+      </div>
+      <div class="fg" style="margin-bottom:1.25rem">
+        <label class="fl" for="rmEmail">Work email</label>
+        <input class="fi" type="email" id="rmEmail" placeholder="alex@company.com" maxlength="100" autocomplete="email" required>
+      </div>
+      <button type="submit" class="rm-gate-submit">Start conversation →</button>
+    </form>
+  </div>
+
+  <!-- Chat (shown after login) -->
+  <div id="rmChat" class="rm-chat" style="display:none">
+    <div id="rmMsgs" class="rm-msgs"></div>
+    <form id="rmChatForm" class="rm-input-row">
+      <input id="rmInput" class="rm-input" type="text" placeholder="Ask about pen testing, compliance, pricing…" maxlength="500" autocomplete="off">
+      <button type="submit" class="rm-send">Send</button>
+    </form>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+
