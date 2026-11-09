@@ -17,8 +17,9 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Orbitron:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="jarvis.css">
 </head>
 <body>
 
@@ -34,13 +35,23 @@
       <li><a href="services/penetration-testing.html">Penetration Testing</a></li>
       <li><a href="services/security-audits.html">Security Audits</a></li>
       <li><a href="services/soc-monitoring.html">24/7 SOC</a></li>
-      <li><a href="about.html" style="color:var(--teal)">About</a></li>
+      <li><a href="about.html" style="color:var(--cyan,#00E5FF)">About</a></li>
       <li><a href="blog.html">Blog &amp; Insights</a></li>
       <li><a href="contact.html">Contact</a></li>
-      <li><a href="contact.html" class="btn btn-primary">Book Security Assessment</a></li>
+      <li><button class="btn btn-primary nav-cta-modal" type="button">Book Security Assessment</button></li>
     </ul>
   </div>
 </header>
+
+<!-- Mobile Sticky CTA Bar -->
+<div id="stickyCta" class="sticky-cta-bar" role="complementary" aria-label="Book assessment">
+  <button type="button" class="btn btn-primary sticky-cta-btn" style="flex:1;justify-content:center">
+    Book Security Assessment →
+  </button>
+  <a href="https://wa.me/923423717545" target="_blank" rel="noopener" class="sticky-wa-btn" aria-label="WhatsApp us">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.84 9.84 0 0 0 12.04 2"/></svg>
+  </a>
+</div>
 
 <main>
 <section class="page-hero">
@@ -132,6 +143,124 @@
     </div>
   </div>
 </footer>
+
+<!-- ────────────── FLOATING CONTACT LAUNCHER ────────────── -->
+<div class="contact-fab" id="contactFab">
+  <div class="contact-fab-panel" id="contactFabPanel" role="dialog" aria-label="Quick contact options">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.85rem;border-bottom:1px solid rgba(0,229,255,0.15);margin-bottom:0.4rem">
+      <span style="font-family:var(--f-mono);font-size:0.72rem;letter-spacing:0.08em;color:var(--cyan,#00E5FF);text-transform:uppercase">Quick Connect</span>
+      <button id="contactFabClose" style="background:none;border:none;color:var(--slate);cursor:pointer;font-size:0.9rem" aria-label="Close panel">✕</button>
+    </div>
+    <button type="button" class="contact-fab-option js-open-contact-modal">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span>Book an assessment</span>
+    </button>
+    <a href="https://wa.me/923423717545" target="_blank" rel="noopener" class="contact-fab-option">
+      <svg viewBox="0 0 24 24" style="stroke:none;fill:#25D366"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.84 9.84 0 0 0 12.04 2m.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.27-2.42 5.82a8.19 8.19 0 0 1-5.82 2.42c-1.44 0-2.85-.38-4.09-1.11l-.29-.17-3.04.8 1.05-2.96-.19-.3a8.19 8.19 0 0 1-1.25-4.32c0-4.54 3.7-8.24 8.24-8.24m4.53 11.53c-.25-.13-1.47-.72-1.7-.81-.23-.08-.4-.13-.57.13-.17.25-.66.81-.81.98-.15.17-.3.19-.55.06-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.39-1.72-.15-.25-.02-.38.11-.5.11-.11.25-.29.38-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.57-1.37-.78-1.87-.2-.49-.41-.42-.57-.43h-.49c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.71 4.29 3.8.6.26 1.07.41 1.44.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.18-.48-.31z"/></svg>
+      <span>WhatsApp us</span>
+    </a>
+    <a href="mailto:riskcurity@gmail.com" class="contact-fab-option">
+      <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <span>Email us</span>
+    </a>
+  </div>
+  <button class="contact-fab-btn" id="contactFabBtn" type="button" aria-label="Open contact launcher" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  </button>
+</div>
+
+<!-- ────────────── 2-STEP CONTACT MODAL ────────────── -->
+<div id="contactModalOverlay" class="form-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="form-modal">
+    <button id="contactModalClose" class="lm-close" aria-label="Close modal" style="top:1.25rem;right:1.25rem">✕</button>
+
+    <div class="form-step-indicator" aria-hidden="true">
+      <div class="form-step-dot active" id="cmDot1"></div>
+      <div class="form-step-dot" id="cmDot2"></div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem">
+      <span class="mono" style="font-size:0.75rem;color:var(--cyan,#00E5FF);letter-spacing:0.08em;text-transform:uppercase" id="cmStepLabel">Step 1 of 2</span>
+      <span class="mono" style="font-size:0.72rem;color:var(--slate)">24h SLA</span>
+    </div>
+
+    <h3 id="modalTitle" style="font-family:var(--f-display);font-size:1.45rem;color:var(--fog-text);margin-bottom:0.4rem">Book a Security Assessment</h3>
+    <p style="font-size:0.88rem;color:var(--slate);margin-bottom:1.5rem">Tell us about your systems or upcoming audit. We'll send a custom scope &amp; proposal within 24 hours.</p>
+
+    <form id="cmForm">
+      <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+      <!-- Step 1 -->
+      <div id="cmStep1">
+        <div class="fg">
+          <label class="fl" for="cm-name">Your Name <span style="color:var(--cyan,#00E5FF)">*</span></label>
+          <input class="fi" type="text" id="cm-name" name="name" placeholder="e.g. Sarah Chen" maxlength="100" autocomplete="name" required>
+        </div>
+        <div class="fg">
+          <label class="fl" for="cm-email">Work Email <span style="color:var(--cyan,#00E5FF)">*</span></label>
+          <input class="fi" type="email" id="cm-email" name="email" placeholder="sarah@company.com" maxlength="100" autocomplete="email" required>
+        </div>
+        <div class="fg" style="margin-bottom:1.75rem">
+          <label class="fl" for="cm-service">Service Needed <span style="color:var(--cyan,#00E5FF)">*</span></label>
+          <select class="fsel" id="cm-service" name="service" required>
+            <option value="" disabled selected>Select priority…</option>
+            <option value="vapt">Penetration Testing (Web App, Mobile, API)</option>
+            <option value="compliance">SOC 2 / ISO 27001 / PCI DSS Audit Readiness</option>
+            <option value="soc">24/7 SOC Monitoring (MDR)</option>
+            <option value="ai">AI Trust &amp; Guardrails Assessment</option>
+            <option value="dev">Secure Product Architecture</option>
+          </select>
+        </div>
+        <button type="button" id="cmNext" class="btn btn-primary" style="width:100%;justify-content:center">
+          Continue to Timeline &amp; Scope →
+        </button>
+      </div>
+
+      <!-- Step 2 -->
+      <div id="cmStep2" style="display:none">
+        <div class="fg">
+          <label class="fl" for="cm-timeline">When do you need this by? <span style="font-size:0.75rem;color:var(--slate);font-weight:normal">(optional)</span></label>
+          <select class="fsel" id="cm-timeline" name="timeline">
+            <option value="" disabled selected>Select target timeline…</option>
+            <option value="urgent">Urgent (Within 7 Days)</option>
+            <option value="month">Within 30 Days</option>
+            <option value="quarter">Next Quarter</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="fl" for="cm-detail">Brief description <span style="font-size:0.75rem;color:var(--slate);font-weight:normal">(optional)</span></label>
+          <textarea class="fta" id="cm-detail" name="detail" rows="3" maxlength="2000" placeholder="Tech stack, cloud provider, or audit deadline."></textarea>
+        </div>
+        <div class="fg" style="margin-bottom:1.75rem">
+          <label class="fl" for="cm-phone">Phone / WhatsApp <span style="font-size:0.75rem;color:var(--slate);font-weight:normal">(optional)</span></label>
+          <input class="fi" type="tel" id="cm-phone" name="phone" placeholder="+1 555 000 0000" maxlength="30" autocomplete="tel">
+        </div>
+        <div style="display:flex;gap:0.75rem">
+          <button type="button" id="cmPrev" class="btn btn-ghost">← Back</button>
+          <button type="submit" class="btn btn-primary" style="flex:1;justify-content:center">Send Request →</button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Modal Success -->
+    <div id="cmSuccess" style="display:none;text-align:center;padding:1.5rem 0">
+      <span class="label" style="background:rgba(0,229,255,0.1);padding:0.3rem 0.8rem;border-radius:12px;border:1px solid rgba(0,229,255,0.3)">Confirmed</span>
+      <h3 style="font-family:var(--f-display);font-size:1.5rem;color:var(--fog-text);margin:1.25rem 0 0.5rem">We're on it.</h3>
+      <p style="color:var(--slate);font-size:0.92rem;margin-bottom:1.5rem">
+        A senior engineer will review your scope and reply to your email within <strong>24 business hours</strong>.
+      </p>
+      <div style="background:rgba(5,10,20,0.6);border:1px solid rgba(0,229,255,0.15);border-radius:10px;padding:1.25rem">
+        <p style="font-size:0.85rem;color:var(--slate);margin-bottom:0.75rem">Want to speak right away? Book a time directly:</p>
+        <!-- EDIT: CALENDLY_URL -->
+        <a href="https://calendly.com/riskcurity" target="_blank" rel="noopener" class="btn btn-ghost" style="width:100%;justify-content:center;border-color:var(--cyan,#00E5FF);color:var(--cyan,#00E5FF)">
+          🗓 Book 15-Min Discovery Call
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
 <script src="script.js"></script>
 </body>
 </html>

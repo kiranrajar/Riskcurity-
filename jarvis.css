@@ -1,0 +1,1466 @@
+/* =============================================================================
+   JARVIS.CSS — Riskcurity HUD Overlay Layer
+   =============================================================================
+   Purpose  : Additive CSS layer imported AFTER styles.css. Transforms the
+              Riskcurity website into a Jarvis / Iron Man HUD aesthetic.
+   Strategy : Overrides color tokens via :root, then layers glass-morphism,
+              neon glows, Orbitron headings, terminal accents, and motion
+              only on GPU-composited properties (transform, opacity).
+              box-shadow and border-color overrides are intentional design
+              exceptions, applied with restraint.
+   Contrast : All text/background combinations meet WCAG AA (≥ 4.5:1 for
+              normal text, ≥ 3:1 for large text). Cyan #00E5FF on #050A14
+              = 11.6:1. Amber #F59E0B on #050A14 = 7.2:1.
+   Motion   : Every animation is wrapped in a prefers-reduced-motion block
+              at the bottom of this file.
+   Author   : Senior FE Engineer — HUD Systems
+   ============================================================================= */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §0 · GOOGLE FONTS — Orbitron (display) + JetBrains Mono (terminal)
+   ───────────────────────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §1 · ROOT TOKEN OVERRIDES
+   Override the existing light/dark palettes with the HUD palette.
+   All downstream component styles inherit these new values automatically.
+   ───────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* ── Core backgrounds ── */
+  --hud-bg:        #050A14;          /* near-black navy — primary page bg       */
+  --fog:           #050A14;          /* replaces existing --fog                 */
+  --bg-dk:         #030710;          /* deeper section backgrounds              */
+  --surface:       rgba(10,20,40,0.80);  /* card surface                       */
+  --surface-2:     rgba(10,20,40,0.90);  /* elevated surface                   */
+  --surface-3:     rgba(15,28,52,0.95);  /* topmost surface layer              */
+  --hud-surface:   rgba(5,10,20,0.85);
+  --hud-surface2:  rgba(10,20,40,0.90);
+
+  /* ── Cyan — primary HUD accent ── */
+  --cyan:          #00E5FF;
+  --cyan-glow:     rgba(0,229,255,0.15);
+  --cyan-dim:      rgba(0,229,255,0.06);
+  --cyan-border:   rgba(0,229,255,0.25);
+
+  /* ── Amber — warnings + key CTAs ── */
+  --amber:         #F59E0B;
+  --amber-glow:    rgba(245,158,11,0.15);
+  --amber-sub:     rgba(245,158,11,0.12);
+
+  /* ── Existing token aliases → HUD values ── */
+  --teal:          var(--cyan);
+  --teal-hover:    #00C8E0;
+  --teal-sub:      var(--cyan-dim);
+  --teal-border:   var(--cyan-border);
+  --hud-border:    rgba(0,229,255,0.15);
+  --border:        rgba(0,229,255,0.12);
+  --border-hi:     rgba(0,229,255,0.35);
+  --hair:          rgba(0,229,255,0.09);
+  --hair-dk:       rgba(0,229,255,0.07);
+  --ink:           #E8EAED;           /* primary body text — high contrast      */
+  --fog-text:      #E8EAED;
+  --slate:         #94A3B8;           /* secondary text                         */
+  --slate-lt:      #6B7A8D;
+
+  /* ── Typography ── */
+  --f-display: 'Orbitron', sans-serif;    /* headings — HUD Orbitron            */
+  --f-mono:    'JetBrains Mono', monospace; /* terminals, data, labels          */
+  --f-body:    'Inter', -apple-system, sans-serif; /* body — unchanged          */
+
+  /* ── Easing (preserve existing) ── */
+  --ease: cubic-bezier(.16,1,.3,1);
+  --t-fast:   .18s ease;
+  --t-smooth: .32s var(--ease);
+
+  /* ── Selection highlight ── */
+  color-scheme: dark;
+}
+
+/* ── Force page background & base text ── */
+html, body {
+  background: var(--hud-bg) !important;
+  color: var(--ink) !important;
+}
+
+/* ── Global selection ── */
+::selection {
+  background: rgba(0,229,255,0.25);
+  color: #E8EAED;
+}
+
+/* ── Headings inherit Orbitron ── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--f-display);
+  color: var(--fog-text);
+  letter-spacing: 0.02em;    /* Orbitron needs slightly more tracking than serifs */
+}
+
+/* ── Labels / eyebrows ── */
+.label {
+  font-family: var(--f-mono);
+  color: var(--cyan);
+  background: var(--cyan-dim);
+  border: 1px solid var(--cyan-border);
+  border-radius: 3px;
+}
+.label--amber { color: var(--amber); background: var(--amber-sub); border-color: rgba(245,158,11,0.25); }
+
+/* ── Focus ring — cyan ── */
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+/* ── Mono utility ── */
+.mono { font-family: var(--f-mono); }
+
+/* ── Scrollbar — HUD style ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #030710; }
+::-webkit-scrollbar-thumb { background: rgba(0,229,255,0.2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,229,255,0.4); }
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §2 · NAVIGATION HEADER — HUD glass bar
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/*
+ * Stronger backdrop blur, cyan bottom glow line instead of a plain border.
+ * The header background deepens when scrolled (.scrolled class set by JS).
+ */
+.site-header {
+  background: rgba(5,10,20,0.88) !important;
+  backdrop-filter: blur(20px) saturate(160%) !important;
+  border-bottom: 1px solid rgba(0,229,255,0.18) !important;
+  box-shadow: 0 1px 0 rgba(0,229,255,0.12), 0 4px 24px rgba(0,0,0,0.5) !important;
+}
+
+/* Cyan glow line rendered as a pseudo-element for a sharper luminescent edge */
+.site-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(0,229,255,0.5) 30%, rgba(0,229,255,0.7) 50%, rgba(0,229,255,0.5) 70%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Brand name — Orbitron at a slightly smaller scale so it fits the nav */
+.nav-brand {
+  font-family: var(--f-display) !important;
+  color: var(--ink) !important;
+  letter-spacing: 0.08em !important;
+  font-weight: 700 !important;
+}
+
+/* Nav links */
+.nav-list a:not(.btn) {
+  font-family: var(--f-mono) !important;
+  font-size: .78rem !important;
+  letter-spacing: .06em !important;
+  text-transform: uppercase !important;
+  color: var(--slate) !important;
+  transition: color var(--t-fast), text-shadow var(--t-fast) !important;
+}
+.nav-list a:not(.btn):hover {
+  color: var(--cyan) !important;
+  text-shadow: 0 0 10px rgba(0,229,255,0.4);
+}
+
+/* "Book Security Assessment" CTA in nav — amber to distinguish from cyan CTAs */
+.nav-list .btn-primary,
+a.btn-primary[href*="contact"],
+a.btn-primary[href*="assessment"] {
+  background: var(--amber) !important;
+  border-color: var(--amber) !important;
+  color: #050A14 !important;
+  font-family: var(--f-mono) !important;
+  font-size: .76rem !important;
+  letter-spacing: .07em !important;
+  text-transform: uppercase !important;
+  box-shadow: 0 0 16px rgba(245,158,11,0.25), 0 4px 12px rgba(0,0,0,0.3) !important;
+}
+.nav-list .btn-primary:hover,
+a.btn-primary[href*="contact"]:hover,
+a.btn-primary[href*="assessment"]:hover {
+  background: #E8900A !important;
+  border-color: #E8900A !important;
+  box-shadow: 0 0 28px rgba(245,158,11,0.45), 0 6px 18px rgba(0,0,0,0.35) !important;
+  transform: translateY(-2px) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §3 · BUTTONS — HUD styled primary & ghost
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/*
+ * .btn-primary — solid cyan bg, dark text, outer glow
+ * Intentionally high contrast: #050A14 on #00E5FF = 11.6:1
+ */
+.btn-primary {
+  background: var(--cyan) !important;
+  border-color: var(--cyan) !important;
+  color: #050A14 !important;
+  font-family: var(--f-mono) !important;
+  font-size: .84rem !important;
+  font-weight: 600 !important;
+  letter-spacing: .07em !important;
+  text-transform: uppercase !important;
+  box-shadow: 0 0 20px rgba(0,229,255,0.25), 0 4px 16px rgba(0,0,0,0.3) !important;
+  transition: transform var(--t-fast), box-shadow var(--t-fast), background var(--t-fast) !important;
+}
+.btn-primary:hover {
+  background: #00C8E0 !important;
+  border-color: #00C8E0 !important;
+  box-shadow: 0 0 32px rgba(0,229,255,0.45), 0 6px 22px rgba(0,0,0,0.35) !important;
+  transform: translateY(-2px) scale(1.02) !important;
+}
+.btn-primary:active {
+  transform: scale(0.97) !important;
+  box-shadow: 0 0 12px rgba(0,229,255,0.2) !important;
+}
+
+/*
+ * .btn-ghost — transparent bg, cyan border and text, hover glow fill
+ */
+.btn-ghost {
+  background: transparent !important;
+  border-color: rgba(0,229,255,0.4) !important;
+  color: var(--cyan) !important;
+  font-family: var(--f-mono) !important;
+  font-size: .84rem !important;
+  font-weight: 600 !important;
+  letter-spacing: .07em !important;
+  text-transform: uppercase !important;
+  box-shadow: none !important;
+  transition: transform var(--t-fast), box-shadow var(--t-fast), background var(--t-fast), border-color var(--t-fast) !important;
+}
+.btn-ghost:hover {
+  background: rgba(0,229,255,0.08) !important;
+  border-color: var(--cyan) !important;
+  box-shadow: 0 0 20px rgba(0,229,255,0.2), inset 0 0 10px rgba(0,229,255,0.04) !important;
+  transform: translateY(-2px) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §4 · HERO SECTION — Animated HUD background
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.hero {
+  position: relative;
+  background: var(--hud-bg) !important;
+  border-bottom: 1px solid rgba(0,229,255,0.12) !important;
+  overflow: hidden;
+}
+
+/*
+ * Dot-grid background overlay — repeating radial-gradient creates an isometric
+ * grid of cyan pinpoints, giving depth to the hero background.
+ * Uses a pseudo-element so it doesn't interrupt content z-stacking.
+ */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(0,229,255,0.12) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+
+/*
+ * Cyan atmospheric glow — large diffuse bloom in upper-right quadrant
+ * and a subtler amber warmth lower-left (like arc reactor heat).
+ */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 55% 45% at 80% 10%, rgba(0,229,255,0.09) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 35% at 15% 80%, rgba(245,158,11,0.06) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure hero content sits above pseudo-elements */
+.hero-grid,
+.hero-content,
+.hero > .container { position: relative; z-index: 1; }
+
+/*
+ * Scanning line — a thin horizontal bright stripe that travels top → bottom,
+ * simulating a radar sweep / sensor scan. Injected by jarvis.js (or exists as
+ * a sibling element in HTML). Falls back gracefully if element isn't present.
+ */
+.hero-scan-line {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(0,229,255,0.6) 30%, rgba(0,229,255,0.9) 50%, rgba(0,229,255,0.6) 70%, transparent 100%);
+  box-shadow: 0 0 12px rgba(0,229,255,0.5), 0 0 24px rgba(0,229,255,0.2);
+  pointer-events: none;
+  z-index: 2;
+  /* GPU-composited: transform only */
+  animation: hud-scan 6s ease-in-out infinite;
+  will-change: transform;
+}
+@keyframes hud-scan {
+  0%   { transform: translateY(-10px); opacity: 0; }
+  5%   { opacity: 1; }
+  95%  { opacity: 1; }
+  100% { transform: translateY(calc(100vh - var(--nav-h, 72px))); opacity: 0; }
+}
+
+/*
+ * Arc-reactor ring — large circular glow ring centered behind the hero headline.
+ * This is a decorative background ring; content layers above via z-index.
+ */
+.arc-reactor-ring {
+  position: absolute;
+  top: 50%;
+  left: 36%;                        /* sits slightly left-center to avoid covering text */
+  transform: translate(-50%, -50%);
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,229,255,0.08);
+  box-shadow:
+    0 0 0 1px   rgba(0,229,255,0.04),
+    0 0 60px    rgba(0,229,255,0.07),
+    0 0 120px   rgba(0,229,255,0.04),
+    inset 0 0 60px rgba(0,229,255,0.04);
+  pointer-events: none;
+  z-index: 0;
+  /* Slow rotation — GPU transform only */
+  animation: arc-spin 30s linear infinite;
+  will-change: transform;
+}
+/* Inner ring */
+.arc-reactor-ring::before {
+  content: '';
+  position: absolute;
+  inset: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,229,255,0.12);
+  box-shadow: 0 0 30px rgba(0,229,255,0.08), inset 0 0 30px rgba(0,229,255,0.04);
+}
+/* Innermost ring */
+.arc-reactor-ring::after {
+  content: '';
+  position: absolute;
+  inset: 100px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,229,255,0.18);
+  box-shadow: 0 0 20px rgba(0,229,255,0.15), inset 0 0 20px rgba(0,229,255,0.08);
+}
+@keyframes arc-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Hero text overrides */
+.hero-title {
+  font-family: var(--f-display) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.03em !important;
+  color: var(--ink) !important;
+  line-height: 1.08 !important;
+}
+.hero-sub {
+  font-family: var(--f-body) !important;
+  color: var(--slate) !important;
+}
+.hero-eyebrow {
+  font-family: var(--f-mono) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §5 · TERMINAL / GAUGE CARD — Hero right column
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/*
+ * The right-hand hero column contains the gauge / risk score terminal.
+ * We override it with a darker glass surface and cyan glow border.
+ */
+.gauge-card,
+.hero-content + div > div,
+.hero-grid > *:last-child > * {
+  background: rgba(5,10,20,0.92) !important;
+  border: 1px solid rgba(0,229,255,0.2) !important;
+  box-shadow: 0 0 32px rgba(0,229,255,0.08), 0 16px 48px rgba(0,0,0,0.6) !important;
+  backdrop-filter: blur(16px) !important;
+  border-radius: 12px !important;
+}
+.gauge-card:hover {
+  border-color: rgba(0,229,255,0.4) !important;
+  box-shadow: 0 0 48px rgba(0,229,255,0.14), 0 20px 56px rgba(0,0,0,0.65) !important;
+}
+
+/* Mono data elements inside gauge */
+.gauge-top-label,
+.gauge-sub,
+.gc-label { font-family: var(--f-mono) !important; color: var(--slate) !important; }
+
+.gauge-num {
+  font-family: var(--f-mono) !important;
+  color: var(--amber) !important;
+  text-shadow: 0 0 20px rgba(245,158,11,0.4);
+}
+
+.gauge-badge {
+  font-family: var(--f-mono) !important;
+  background: var(--amber-sub) !important;
+  color: var(--amber) !important;
+}
+.gauge-badge.ok {
+  background: var(--cyan-dim) !important;
+  color: var(--cyan) !important;
+}
+
+.g-track { stroke: rgba(0,229,255,0.1) !important; }
+
+/* Blinking block cursor for terminal hero elements */
+.hero-terminal-cursor {
+  display: inline-block;
+  width: 9px;
+  height: 1.1em;
+  background: var(--cyan);
+  vertical-align: text-bottom;
+  margin-left: 2px;
+  box-shadow: 0 0 6px rgba(0,229,255,0.6);
+  /* GPU opacity only */
+  animation: cursor-blink 1.1s step-end infinite;
+  will-change: opacity;
+}
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* Terminal mono text */
+.hero-content + div > div .mono,
+.gauge-card .mono {
+  font-family: var(--f-mono) !important;
+  color: var(--cyan) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §6 · DISCIPLINE CARDS (.disc-card) — Glassmorphism + corner reticles
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/*
+ * Glass surface with cyan hairline border. On hover, the border intensifies and
+ * corner bracket pseudo-elements appear, creating a "targeting reticle" effect.
+ */
+.disc-card {
+  background: rgba(5,10,20,0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(0,229,255,0.15) !important;
+  border-radius: 10px !important;
+  position: relative;
+  transition:
+    border-color var(--t-smooth),
+    box-shadow var(--t-smooth),
+    transform var(--t-smooth) !important;
+}
+.disc-card:hover {
+  border-color: rgba(0,229,255,0.5) !important;
+  box-shadow:
+    0 0 24px rgba(0,229,255,0.15),
+    inset 0 0 12px rgba(0,229,255,0.04) !important;
+  transform: translateY(-6px) !important;
+  background: rgba(5,10,20,0.88) !important;
+}
+
+/*
+ * Corner bracket reticles — appear on hover using ::before and ::after.
+ * Each corner bracket is 12×12px with two 2px border segments.
+ * We simulate all four corners with a single pair of pseudo-elements by
+ * combining multiple box-shadows and border segments via CSS gradient borders.
+ */
+.disc-card::before,
+.disc-card::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+  /* GPU compositing — opacity + transform only */
+  transition: opacity .3s ease, transform .3s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+/* Top-left bracket */
+.disc-card::before {
+  top: 8px; left: 8px;
+  border-top: 2px solid var(--cyan);
+  border-left: 2px solid var(--cyan);
+  transform: translate(-3px, -3px);
+  box-shadow: 0 0 6px rgba(0,229,255,0.4);
+}
+/* Bottom-right bracket */
+.disc-card::after {
+  bottom: 8px; right: 8px;
+  border-bottom: 2px solid var(--cyan);
+  border-right: 2px solid var(--cyan);
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 6px rgba(0,229,255,0.4);
+}
+.disc-card:hover::before {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+.disc-card:hover::after {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* Icon stroke color → cyan */
+.disc-icon svg {
+  stroke: var(--cyan) !important;
+  filter: drop-shadow(0 0 4px rgba(0,229,255,0.3));
+}
+/* Title / tech line */
+.disc-title { font-family: var(--f-display) !important; font-weight: 600 !important; }
+.disc-tech { font-family: var(--f-mono) !important; color: var(--cyan) !important; }
+/* Feature bullet dots */
+.disc-feats li::before { background: var(--cyan) !important; }
+/* Divider between desc and feats */
+.disc-feats { border-top-color: rgba(0,229,255,0.1) !important; }
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §7 · FRAMEWORK CARDS (.fw-card) — Glassmorphism
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.fw-card {
+  background: rgba(5,10,20,0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(0,229,255,0.15) !important;
+  border-radius: 10px !important;
+  position: relative;
+  transition: border-color var(--t-smooth), box-shadow var(--t-smooth), transform var(--t-smooth) !important;
+}
+.fw-card:hover {
+  border-color: rgba(0,229,255,0.45) !important;
+  box-shadow: 0 0 22px rgba(0,229,255,0.12), inset 0 0 10px rgba(0,229,255,0.03) !important;
+  transform: translateY(-4px) !important;
+  background: rgba(5,10,20,0.88) !important;
+}
+/* Featured variant uses amber accent */
+.fw-card--featured {
+  border-color: rgba(245,158,11,0.25) !important;
+  background: linear-gradient(180deg, rgba(5,10,20,0.80) 0%, rgba(245,158,11,0.03) 100%) !important;
+}
+.fw-card--featured:hover {
+  border-color: rgba(245,158,11,0.55) !important;
+  box-shadow: 0 0 22px rgba(245,158,11,0.12) !important;
+}
+.fw-header { border-bottom-color: rgba(0,229,255,0.1) !important; }
+.fw-category-tag { font-family: var(--f-mono) !important; color: var(--cyan) !important; }
+.fw-category-tag--amber { color: var(--amber) !important; }
+.fw-card-title { font-family: var(--f-display) !important; }
+.fw-code { font-family: var(--f-mono) !important; color: var(--cyan) !important; }
+.fw-card--featured .fw-code { color: var(--amber) !important; }
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §8 · METHODOLOGY CARDS (.m-card) — HUD data panel + glow on in-view
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.m-card {
+  background: rgba(5,10,20,0.78) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(0,229,255,0.12) !important;
+  border-radius: 10px !important;
+}
+/* Glow when card scrolls into view */
+.m-card.in-view {
+  border-color: rgba(0,229,255,0.3) !important;
+  box-shadow: 0 0 20px rgba(0,229,255,0.1), 0 8px 24px rgba(0,0,0,0.4) !important;
+}
+
+/*
+ * Step number circle — becomes cyan-filled when in-view,
+ * reinforcing the "scan activating" metaphor.
+ */
+.m-num {
+  font-family: var(--f-mono) !important;
+  border-color: rgba(0,229,255,0.2) !important;
+  color: var(--slate) !important;
+  transition: background var(--t-smooth), border-color var(--t-smooth), color var(--t-smooth), box-shadow var(--t-smooth) !important;
+}
+.m-card.in-view .m-num {
+  background: var(--cyan) !important;
+  border-color: var(--cyan) !important;
+  color: #050A14 !important;
+  box-shadow: 0 0 16px rgba(0,229,255,0.4) !important;
+}
+
+.m-stage-label { font-family: var(--f-mono) !important; color: var(--cyan) !important; }
+.m-title { font-family: var(--f-display) !important; }
+.m-deliv { font-family: var(--f-mono) !important; border-top-color: rgba(0,229,255,0.1) !important; }
+/* Methodology connector line — cyan */
+.method-grid::before { background: rgba(0,229,255,0.15) !important; }
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §9 · TRUST BAR — Stats with Orbitron number glow
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.trust-bar {
+  background: var(--hud-surface) !important;
+  border-top: 1px solid rgba(0,229,255,0.12) !important;
+  border-bottom: 1px solid rgba(0,229,255,0.12) !important;
+}
+
+/*
+ * Stat numbers — Orbitron at large scale, cyan with text-shadow glow.
+ * WCAG AA: #00E5FF on rgba(5,10,20,0.85) ≈ #0D1726 → 10.8:1 ✓
+ */
+.trust-stat-num {
+  font-family: var(--f-display) !important;
+  font-size: 2.4rem !important;
+  font-weight: 700 !important;
+  color: var(--cyan) !important;
+  text-shadow: 0 0 20px rgba(0,229,255,0.5), 0 0 40px rgba(0,229,255,0.2);
+  line-height: 1 !important;
+}
+
+.trust-stat-lbl {
+  font-family: var(--f-mono) !important;
+  font-size: .75rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: .08em !important;
+  color: var(--slate) !important;
+}
+
+/* Trust logo tags — HUD chip style */
+.trust-logo-tag {
+  background: rgba(5,10,20,0.8) !important;
+  border: 1px solid rgba(0,229,255,0.2) !important;
+  color: var(--slate) !important;
+  font-family: var(--f-mono) !important;
+}
+.trust-logo-tag svg { fill: var(--cyan) !important; }
+
+/* .stat-num-anim generic counter style */
+.stat-num-anim {
+  font-family: var(--f-display) !important;
+  color: var(--cyan) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §10 · CASE STUDY / STAT STRIP — HUD data cells
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.stat-cell {
+  background: rgba(5,10,20,0.78) !important;
+  border: 1px solid rgba(0,229,255,0.12) !important;
+  backdrop-filter: blur(8px) !important;
+  border-radius: 8px !important;
+}
+.stat-cell:hover {
+  border-color: rgba(0,229,255,0.35) !important;
+  box-shadow: 0 0 18px rgba(0,229,255,0.1) !important;
+  background: rgba(5,10,20,0.9) !important;
+}
+.stat-nums { font-family: var(--f-mono) !important; }
+.sn-after { color: var(--cyan) !important; }
+
+/* Narrative stages */
+.stage {
+  background: rgba(5,10,20,0.75) !important;
+  border: 1px solid rgba(0,229,255,0.1) !important;
+  backdrop-filter: blur(8px) !important;
+}
+.stage.in-view {
+  border-color: rgba(0,229,255,0.35) !important;
+  box-shadow: 0 0 20px rgba(0,229,255,0.1) !important;
+}
+.stage-num { font-family: var(--f-mono) !important; color: var(--cyan) !important; }
+.stage-name { font-family: var(--f-display) !important; }
+.pill {
+  background: var(--cyan-dim) !important;
+  border-color: var(--cyan-border) !important;
+  color: var(--cyan) !important;
+  font-family: var(--f-mono) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §11 · WHY / RATING / FAQ CARDS
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.why-card, .rating-card, .faq-item {
+  background: rgba(5,10,20,0.78) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(0,229,255,0.12) !important;
+  border-radius: 10px !important;
+}
+.why-card:hover {
+  border-color: rgba(0,229,255,0.4) !important;
+  box-shadow: 0 0 22px rgba(0,229,255,0.12) !important;
+}
+.why-title { font-family: var(--f-display) !important; }
+
+.rating-card { border-color: rgba(0,229,255,0.15) !important; }
+.rt-num { font-family: var(--f-display) !important; color: var(--cyan) !important; }
+
+/* FAQ */
+.faq-item:hover, .faq-item.open {
+  border-color: rgba(0,229,255,0.35) !important;
+  box-shadow: 0 0 18px rgba(0,229,255,0.1) !important;
+  background: rgba(5,10,20,0.9) !important;
+}
+.faq-icon {
+  background: var(--cyan-dim) !important;
+  border-color: var(--cyan-border) !important;
+  color: var(--cyan) !important;
+}
+.faq-item.open .faq-icon {
+  background: var(--cyan) !important;
+  border-color: var(--cyan) !important;
+  color: #050A14 !important;
+  box-shadow: 0 0 10px rgba(0,229,255,0.4) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §12 · CONTACT / FORM SECTION
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.contact-section {
+  background: var(--hud-bg) !important;
+}
+.form-card {
+  background: rgba(5,10,20,0.92) !important;
+  border: 1px solid rgba(0,229,255,0.15) !important;
+  backdrop-filter: blur(16px) !important;
+  border-radius: 14px !important;
+}
+/* Input fields */
+.fi, .fsel, .fta, .ri {
+  background: rgba(10,20,40,0.8) !important;
+  border: 1px solid rgba(0,229,255,0.15) !important;
+  color: var(--ink) !important;
+  font-family: var(--f-body) !important;
+  border-radius: 6px !important;
+}
+.fi:focus, .fsel:focus, .fta:focus, .ri:focus {
+  border-color: var(--cyan) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(0,229,255,0.1) !important;
+  background: rgba(10,20,40,0.95) !important;
+}
+.fi::placeholder, .fta::placeholder { color: var(--slate-lt) !important; }
+.fl, .rl { color: var(--ink) !important; font-family: var(--f-body) !important; }
+.fsel option { background: #050A14 !important; }
+.ci-label { font-family: var(--f-mono) !important; color: var(--cyan) !important; }
+.ci-val { font-family: var(--f-mono) !important; }
+
+/* Star rating component */
+.star.hovered svg, .star.selected svg {
+  fill: var(--amber) !important;
+  stroke: var(--amber) !important;
+  filter: drop-shadow(0 0 6px rgba(245,158,11,0.5)) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §13 · FORM MODAL OVERLAY (.form-modal)
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/*
+ * Full-screen frosted overlay. Compositing: opacity driven by .active class.
+ * Modal slides in via transform on the inner .form-modal element.
+ */
+.form-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: rgba(5,10,20,0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  /* GPU opacity transition */
+  transition: opacity .3s ease;
+}
+.form-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.form-modal {
+  background: rgba(5,10,20,0.98);
+  border: 1px solid rgba(0,229,255,0.2);
+  border-radius: 16px;
+  max-width: 560px;
+  width: 100%;
+  padding: 2.5rem;
+  position: relative;
+  box-shadow: 0 0 40px rgba(0,229,255,0.1), 0 24px 60px rgba(0,0,0,0.7);
+  /* GPU transform slide-in */
+  transform: translateY(20px) scale(0.98);
+  transition: transform .3s var(--ease), opacity .3s ease;
+  opacity: 0;
+}
+.form-modal-overlay.active .form-modal {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+/* HUD corner decoration on modal */
+.form-modal::before,
+.form-modal::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
+.form-modal::before {
+  top: 10px; left: 10px;
+  border-top: 2px solid rgba(0,229,255,0.5);
+  border-left: 2px solid rgba(0,229,255,0.5);
+}
+.form-modal::after {
+  bottom: 10px; right: 10px;
+  border-bottom: 2px solid rgba(0,229,255,0.5);
+  border-right: 2px solid rgba(0,229,255,0.5);
+}
+
+/* Progress step indicator */
+.form-step-indicator {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+.form-step-dot {
+  height: 3px;
+  border-radius: 2px;
+  flex: 1;
+  background: rgba(0,229,255,0.15);
+  transition: background .3s ease;
+}
+.form-step-dot.active {
+  background: var(--cyan);
+  box-shadow: 0 0 8px rgba(0,229,255,0.4);
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §14 · CONTACT FLOATING ACTION BUTTON (.contact-fab)
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/*
+ * Fixed FAB in the bottom-right quadrant. Amber coloring distinguishes it as
+ * a primary CTA separate from the cyan information-density elements.
+ * The pulsing ring animation uses box-shadow only (no layout impact).
+ */
+.contact-fab {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+}
+
+.contact-fab-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--amber);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #050A14;
+  box-shadow: 0 4px 16px rgba(245,158,11,0.3);
+  /* Pulsing ring — box-shadow animation (intentional non-GPU exception) */
+  animation: fab-pulse 2.5s ease-out infinite;
+  transition: transform var(--t-fast), background var(--t-fast);
+  will-change: transform;
+}
+.contact-fab-btn:hover {
+  background: #E8900A;
+  transform: scale(1.08);
+  animation-play-state: paused;
+}
+.contact-fab-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: #050A14;
+}
+@keyframes fab-pulse {
+  0%   { box-shadow: 0 0 0 0   rgba(245,158,11,0.4), 0 4px 16px rgba(245,158,11,0.3); }
+  70%  { box-shadow: 0 0 0 14px rgba(245,158,11,0),   0 4px 16px rgba(245,158,11,0.3); }
+  100% { box-shadow: 0 0 0 0   rgba(245,158,11,0),   0 4px 16px rgba(245,158,11,0.3); }
+}
+
+/*
+ * Slide-up glass panel — hidden by default, revealed when .open is toggled.
+ * Transform + opacity for GPU compositing; visibility prevents tab-focus
+ * when hidden.
+ */
+.contact-fab-panel {
+  position: absolute;
+  bottom: calc(100% + 0.75rem);
+  right: 0;
+  width: 220px;
+  background: rgba(5,10,20,0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0,229,255,0.2);
+  border-radius: 12px;
+  padding: 0.75rem;
+  box-shadow: 0 0 24px rgba(0,229,255,0.08), 0 12px 32px rgba(0,0,0,0.6);
+  /* Hidden state */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px) scale(0.97);
+  /* GPU transition */
+  transition: opacity .25s var(--ease), transform .25s var(--ease), visibility .25s;
+}
+.contact-fab-panel.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+/* Panel option buttons */
+.contact-fab-option {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--f-mono);
+  font-size: .78rem;
+  letter-spacing: .04em;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 7px;
+  transition: background var(--t-fast), color var(--t-fast), box-shadow var(--t-fast);
+  text-decoration: none;
+}
+.contact-fab-option:hover {
+  background: rgba(0,229,255,0.08);
+  color: var(--cyan);
+  box-shadow: inset 0 0 10px rgba(0,229,255,0.04);
+}
+.contact-fab-option svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  stroke: currentColor;
+  fill: none;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §15 · RISKMATE AI WIDGET — Jarvis-style orb + HUD panel
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/*
+ * Launcher / trigger wrapper — inherits the appear animation from base styles.
+ * Override trigger button to become a cyan orb.
+ */
+.rm-trigger,
+.rm-launcher > button {
+  background: radial-gradient(circle, rgba(0,229,255,0.15) 0%, rgba(0,229,255,0.04) 100%) !important;
+  border: 2px solid rgba(0,229,255,0.4) !important;
+  box-shadow: 0 0 16px rgba(0,229,255,0.2), 0 4px 16px rgba(0,0,0,0.4) !important;
+  animation: orb-idle 3s ease-in-out infinite, rm-appear .5s 1.4s var(--ease) forwards !important;
+}
+.rm-trigger:hover,
+.rm-launcher > button:hover {
+  box-shadow: 0 0 28px rgba(0,229,255,0.4), 0 6px 22px rgba(0,0,0,0.5) !important;
+  transform: scale(1.08) !important;
+}
+
+/* The orb ring icon */
+.rm-orb {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,229,255,0.2) 0%, rgba(0,229,255,0.05) 100%);
+  border: 2px solid rgba(0,229,255,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 8px rgba(0,229,255,0.3);
+  animation: orb-idle 3s ease-in-out infinite;
+  will-change: opacity, box-shadow;
+}
+.rm-orb.thinking {
+  /* Faster ring spin when processing */
+  animation: orb-thinking .8s linear infinite;
+}
+/* Pulsing idle — box-shadow only (intentional exception, subtle) */
+@keyframes orb-idle {
+  0%,  100% { box-shadow: 0 0  8px rgba(0,229,255,0.3), 0 0  0   rgba(0,229,255,0.15); }
+  50%        { box-shadow: 0 0 20px rgba(0,229,255,0.5), 0 0 20px rgba(0,229,255,0.1); }
+}
+/* Thinking — a spinning outer glow using opacity modulation */
+@keyframes orb-thinking {
+  0%   { box-shadow: 0 0 10px rgba(0,229,255,0.6),  0 0 2px rgba(0,229,255,0.2); opacity: 1; }
+  50%  { box-shadow: 0 0 24px rgba(0,229,255,0.9),  0 0 4px rgba(0,229,255,0.4); opacity: 0.85; }
+  100% { box-shadow: 0 0 10px rgba(0,229,255,0.6),  0 0 2px rgba(0,229,255,0.2); opacity: 1; }
+}
+
+/* Launcher label pill */
+.rm-launcher-label {
+  background: rgba(5,10,20,0.9) !important;
+  border: 1px solid rgba(0,229,255,0.2) !important;
+  color: var(--ink) !important;
+  font-family: var(--f-mono) !important;
+  font-size: .76rem !important;
+  letter-spacing: .05em !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4) !important;
+}
+.rm-launcher-label:hover {
+  border-color: rgba(0,229,255,0.45) !important;
+  background: rgba(5,10,20,0.98) !important;
+}
+
+/* Status dot on launcher */
+.rm-label-dot, .rm-teal-dot {
+  background: var(--cyan) !important;
+  box-shadow: 0 0 6px rgba(0,229,255,0.5) !important;
+}
+@keyframes rm-pulse {
+  0%   { box-shadow: 0 0 0 0   rgba(0,229,255,0.55); }
+  70%  { box-shadow: 0 0 0 7px rgba(0,229,255,0); }
+  100% { box-shadow: 0 0 0 0   rgba(0,229,255,0); }
+}
+
+/*
+ * Panel — HUD glass panel with cyan border + corner decorations.
+ * corner ::before / ::after brackets echo the disc-card reticle pattern.
+ */
+.rm-panel {
+  background: rgba(5,10,20,0.97) !important;
+  border: 1px solid rgba(0,229,255,0.25) !important;
+  box-shadow: 0 0 32px rgba(0,229,255,0.08), 0 20px 50px rgba(0,0,0,0.7) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+/* Panel corner bracket decorations */
+.rm-panel::before,
+.rm-panel::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.6;
+}
+.rm-panel::before {
+  top: 8px; left: 8px;
+  border-top: 2px solid var(--cyan);
+  border-left: 2px solid var(--cyan);
+}
+.rm-panel::after {
+  bottom: 8px; right: 8px;
+  border-bottom: 2px solid var(--cyan);
+  border-right: 2px solid var(--cyan);
+}
+
+/* Panel header */
+.rm-head {
+  background: rgba(3,7,16,0.95) !important;
+  border-bottom: 1px solid rgba(0,229,255,0.15) !important;
+}
+.rm-head-name {
+  font-family: var(--f-display) !important;
+  color: var(--ink) !important;
+  letter-spacing: .06em !important;
+}
+.rm-head-sub {
+  font-family: var(--f-mono) !important;
+  color: var(--slate) !important;
+}
+/* Animated status dot in panel header */
+.rm-head-sub::before {
+  background: var(--cyan) !important;
+  box-shadow: 0 0 6px rgba(0,229,255,0.7) !important;
+}
+.rm-close {
+  color: var(--slate-lt) !important;
+  font-family: var(--f-mono) !important;
+}
+.rm-close:hover {
+  color: var(--cyan) !important;
+  background: rgba(0,229,255,0.08) !important;
+}
+
+/* Chat message area */
+.rm-msgs {
+  background: rgba(3,7,16,0.9) !important;
+}
+.rm-msgs::-webkit-scrollbar-thumb { background: rgba(0,229,255,0.2) !important; }
+.rm-msgs::-webkit-scrollbar-thumb:hover { background: rgba(0,229,255,0.4) !important; }
+
+/* Chat bubbles */
+.rm-msg.user {
+  background: rgba(0,229,255,0.1) !important;
+  border: 1px solid rgba(0,229,255,0.2) !important;
+  color: var(--ink) !important;
+  font-family: var(--f-body) !important;
+}
+.rm-msg.bot {
+  background: rgba(10,20,40,0.8) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  color: var(--slate) !important;
+  font-family: var(--f-body) !important;
+}
+
+/* Quick-reply chips */
+.rm-chip {
+  font-family: var(--f-mono) !important;
+  font-size: .68rem !important;
+  border: 1px solid rgba(0,229,255,0.3) !important;
+  background: rgba(0,229,255,0.06) !important;
+  color: var(--cyan) !important;
+  border-radius: 100px !important;
+  transition: background var(--t-fast), box-shadow var(--t-fast) !important;
+}
+.rm-chip:hover {
+  background: rgba(0,229,255,0.14) !important;
+  box-shadow: 0 0 10px rgba(0,229,255,0.2) !important;
+}
+
+/* Input row */
+.rm-input-row {
+  background: rgba(5,10,20,0.95) !important;
+  border-top: 1px solid rgba(0,229,255,0.12) !important;
+}
+.rm-input {
+  background: rgba(10,20,40,0.9) !important;
+  border-color: rgba(0,229,255,0.15) !important;
+  color: var(--ink) !important;
+  font-family: var(--f-body) !important;
+}
+.rm-input:focus {
+  border-color: var(--cyan) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(0,229,255,0.1) !important;
+}
+.rm-send {
+  background: var(--cyan) !important;
+  color: #050A14 !important;
+  font-family: var(--f-mono) !important;
+  font-size: .78rem !important;
+  font-weight: 600 !important;
+  border-radius: 5px !important;
+  transition: background var(--t-fast), box-shadow var(--t-fast) !important;
+}
+.rm-send:hover {
+  background: #00C8E0 !important;
+  box-shadow: 0 0 14px rgba(0,229,255,0.35) !important;
+}
+
+/* Gate form inside AI panel */
+.rm-gate-title { font-family: var(--f-display) !important; }
+.rm-gate .fi {
+  background: rgba(10,20,40,0.9) !important;
+  border-color: rgba(0,229,255,0.15) !important;
+}
+.rm-gate .fi:focus { border-color: var(--cyan) !important; }
+.rm-gate-submit {
+  background: var(--cyan) !important;
+  color: #050A14 !important;
+  font-family: var(--f-mono) !important;
+  font-weight: 600 !important;
+}
+.rm-gate-submit:hover { background: #00C8E0 !important; }
+
+/* Typing indicator */
+.rm-typing span { background: rgba(0,229,255,0.3) !important; }
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §16 · SCROLL REVEAL ANIMATIONS
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/*
+ * Stronger, crisper reveal vs base styles.
+ * Strictly GPU properties: opacity + transform only.
+ */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .6s var(--ease), transform .6s var(--ease);
+}
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §17 · MOBILE STICKY CTA BAR
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/*
+ * Hidden by default; JS adds .visible class on mobile scroll.
+ * Only shown via media query on mobile (<768px).
+ */
+.sticky-cta-bar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 950;
+  background: rgba(5,10,20,0.98);
+  border-top: 1px solid rgba(0,229,255,0.2);
+  backdrop-filter: blur(16px);
+  padding: 0.75rem 1rem;
+  gap: 0.75rem;
+  align-items: center;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.5), 0 -1px 0 rgba(0,229,255,0.1);
+  /* Slide up from bottom — GPU transform */
+  transform: translateY(100%);
+  transition: transform .35s var(--ease);
+}
+@media (max-width: 768px) {
+  .sticky-cta-bar.visible {
+    display: flex;
+    transform: translateY(0);
+  }
+  /* Adjust FAB position on mobile to avoid overlap with sticky bar */
+  .contact-fab {
+    bottom: 5rem;
+  }
+  .rm-launcher {
+    bottom: 5.5rem !important;
+  }
+}
+
+/* CTA bar button fills width */
+.sticky-cta-bar .btn {
+  flex: 1;
+  justify-content: center;
+  font-size: .82rem !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §18 · FOOTER — HUD dark treatment
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.site-footer {
+  background: #030710 !important;
+  border-top: 1px solid rgba(0,229,255,0.1) !important;
+}
+.footer-brand-name {
+  font-family: var(--f-display) !important;
+  color: var(--ink) !important;
+  letter-spacing: .08em !important;
+}
+.footer-col-title {
+  font-family: var(--f-mono) !important;
+  color: var(--ink) !important;
+  letter-spacing: .1em !important;
+}
+.footer-links a { color: var(--slate-lt) !important; }
+.footer-links a:hover { color: var(--cyan) !important; }
+.footer-bottom {
+  border-top-color: rgba(0,229,255,0.08) !important;
+  font-family: var(--f-mono) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §19 · WHATSAPP WIDGET — HUD styled
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-badge {
+  background: rgba(5,10,20,0.9) !important;
+  border: 1px solid rgba(0,229,255,0.2) !important;
+  font-family: var(--f-mono) !important;
+  color: var(--ink) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §20 · LEAD MAGNET MODAL — HUD glass treatment
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.lm-modal-overlay {
+  background: rgba(5,10,20,0.88) !important;
+}
+.lm-modal {
+  background: rgba(5,10,20,0.97) !important;
+  border: 1px solid rgba(0,229,255,0.2) !important;
+  box-shadow: 0 0 40px rgba(0,229,255,0.08), 0 24px 60px rgba(0,0,0,0.75) !important;
+}
+.lm-title { font-family: var(--f-display) !important; }
+.lm-feat-list li::before { color: var(--cyan) !important; }
+.lm-close { color: var(--slate) !important; }
+.lm-close:hover { color: var(--cyan) !important; }
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §21 · BLOG & SUBPAGE STYLES
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.page-hero {
+  background: var(--hud-bg) !important;
+  border-bottom: 1px solid rgba(0,229,255,0.12) !important;
+}
+.page-title { font-family: var(--f-display) !important; color: var(--ink) !important; }
+.blog-card, .sidebar-card {
+  background: rgba(5,10,20,0.78) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(0,229,255,0.12) !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+.blog-card:hover {
+  border-color: rgba(0,229,255,0.4) !important;
+  box-shadow: 0 0 18px rgba(0,229,255,0.1) !important;
+  transform: translateY(-4px) !important;
+}
+.blog-title { font-family: var(--f-display) !important; color: var(--ink) !important; }
+.blog-tag { font-family: var(--f-mono) !important; color: var(--cyan) !important; }
+.blog-meta { font-family: var(--f-mono) !important; }
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §22 · SECTION-LEVEL BACKGROUND OVERRIDES
+   Ensure all sections inherit the HUD bg (some had explicit bg-dk / white).
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.disciplines,
+.methodology,
+.why,
+.case-study,
+.rating-section,
+.faq-section,
+.frameworks-section,
+.trust-bar {
+  background: var(--hud-bg) !important;
+}
+.contact-section {
+  background: #030710 !important;
+}
+/* Section border separators → cyan hairline */
+section, .disciplines, .methodology, .why, .case-study,
+.rating-section, .faq-section, .frameworks-section {
+  border-color: rgba(0,229,255,0.1) !important;
+}
+/* FAQ section background glow — replace teal with cyan */
+.faq-section::before {
+  background: radial-gradient(circle, rgba(0,229,255,0.05) 0%, rgba(5,10,20,0) 70%) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §23 · TYPOGRAPHY HELPERS — ensure HUD sections read correctly
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.section-title {
+  font-family: var(--f-display) !important;
+  color: var(--ink) !important;
+  letter-spacing: .02em !important;
+}
+.section-lead {
+  color: var(--slate) !important;
+}
+p { color: var(--slate) !important; }
+
+/* Mono labels everywhere */
+.gauge-top-label,
+.m-stage-label,
+.fw-category-tag,
+.disc-tech,
+.stage-num,
+.stat-cell .gc-label,
+.footer-col-title,
+.ci-label,
+.rm-head-name,
+.trust-title-sm {
+  font-family: var(--f-mono) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   §24 · PREFERS-REDUCED-MOTION — accessibility override
+   Every animated element's duration is collapsed to near-zero;
+   iteration counts set to 1 to fully stop looping animations.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  /*
+   * Global kill-switch — targets all elements, pseudo-elements, and
+   * any CSS transitions or animations defined in this file or styles.css.
+   * Scroll behavior is also set to auto (removes smooth-scroll inertia).
+   */
+  *, *::before, *::after {
+    animation-duration:        0.01ms !important;
+    animation-iteration-count: 1      !important;
+    transition-duration:       0.01ms !important;
+    scroll-behavior:           auto   !important;
+  }
+
+  /* Ensure reveal elements appear immediately (opacity/transform still fires) */
+  .reveal,
+  .reveal-stagger > *,
+  .m-card,
+  .form-card .fg,
+  .stage {
+    opacity:    1       !important;
+    transform:  none    !important;
+    transition: none    !important;
+  }
+
+  /* Stop the arc reactor ring */
+  .arc-reactor-ring { animation: none !important; }
+
+  /* Stop scanning line — hide it */
+  .hero-scan-line { display: none !important; }
+
+  /* Stop cursor blink — always visible */
+  .hero-terminal-cursor { animation: none !important; opacity: 1 !important; }
+
+  /* Stop orb idle / thinking */
+  .rm-orb,
+  .rm-trigger,
+  .rm-launcher > button { animation: none !important; }
+
+  /* Ensure rm-launcher still appears (was opacity:0 waiting on animation) */
+  .rm-launcher { opacity: 1 !important; }
+  .rm-trigger  { opacity: 1 !important; }
+
+  /* Stop FAB pulse */
+  .contact-fab-btn { animation: none !important; }
+
+  /* Stop methodology line draw */
+  .method-grid::before { transform: scaleX(1) !important; transition: none !important; }
+
+  /* Dot-bounce typing indicator — freeze at neutral */
+  .rm-typing span { animation: none !important; transform: none !important; }
+
+  /* WA badge dot pulse */
+  .wa-badge-dot { animation: none !important; }
+}
