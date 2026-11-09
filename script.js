@@ -92,6 +92,80 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ════════════════════════════════
+     0. INTRO PRELOADER (HASEEN HABIB STYLE CURTAIN COUNTUP)
+  ════════════════════════════════ */
+  const introLoader = document.getElementById('introLoader');
+  const loaderCount = document.getElementById('loaderCount');
+  const loaderBar   = document.getElementById('loaderBarFill');
+  if (introLoader && loaderCount && !prefersReducedMotion) {
+    let count = 0;
+    const duration = 1100;
+    const startTime = performance.now();
+    function tickLoader(now) {
+      const p = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 2.5);
+      count = Math.floor(eased * 100);
+      loaderCount.textContent = count < 10 ? '0' + count : count;
+      if (loaderBar) loaderBar.style.transform = `scaleX(${p})`;
+      if (p < 1) {
+        requestAnimationFrame(tickLoader);
+      } else {
+        loaderCount.textContent = '100';
+        if (loaderBar) loaderBar.style.transform = 'scaleX(1)';
+        setTimeout(() => {
+          introLoader.classList.add('dismissed');
+          triggerKineticReveals();
+        }, 180);
+      }
+    }
+    requestAnimationFrame(tickLoader);
+  } else if (introLoader) {
+    introLoader.classList.add('dismissed');
+    triggerKineticReveals();
+  }
+
+  /* ════════════════════════════════
+     0b. REAL-TIME SCROLL PROGRESS BAR
+  ════════════════════════════════ */
+  const scrollProg = document.getElementById('scrollProgressBar');
+  if (scrollProg) {
+    window.addEventListener('scroll', () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = max > 0 ? Math.min(Math.max(window.scrollY / max, 0), 1) : 0;
+      scrollProg.style.transform = `scaleX(${progress})`;
+    }, { passive: true });
+  }
+
+  /* ════════════════════════════════
+     0c. KINETIC MASKED TEXT REVEAL
+  ════════════════════════════════ */
+  function triggerKineticReveals() {
+    const lines = document.querySelectorAll('.reveal-line');
+    lines.forEach((line) => {
+      const delay = parseInt(line.dataset.delay || '100', 10);
+      setTimeout(() => {
+        line.classList.add('revealed');
+      }, delay);
+    });
+  }
+
+  /* ════════════════════════════════
+     0d. INTERACTIVE SOLUTION FINDER TABS
+  ════════════════════════════════ */
+  const finderTabs = document.querySelectorAll('.finder-tab-btn');
+  const finderPanels = document.querySelectorAll('.finder-panel');
+  finderTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      finderTabs.forEach(t => t.classList.remove('active'));
+      finderPanels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      const targetId = tab.dataset.target;
+      const targetPanel = document.getElementById(targetId);
+      if (targetPanel) targetPanel.classList.add('active');
+    });
+  });
+
+  /* ════════════════════════════════
      1. NAV TOGGLE
   ════════════════════════════════ */
   const navToggle = document.getElementById('navToggle');
